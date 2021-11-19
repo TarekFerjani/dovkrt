@@ -1,3 +1,2 @@
-FROM nginx 
-COPY nginx.conf /etc/nginx/nginx.conf 
-COPY ./src/dist /usr/share/nginx/html 
+FROM nginx
+COPY static-html-directory /usr/share/nginx/html
