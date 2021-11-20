@@ -1,7 +1,7 @@
 # Stage 1
 2
 3
-FROM node:10-alpine as build-step
+FROM node:10-alpine as build
 4
 5
 RUN mkdir -p /app
@@ -25,10 +25,10 @@ RUN npm run build --prod
  
 18
 19
-# Stage 2
+# Web server 
 20
 21
 FROM nginx:1.17.1-alpine
 22
 23
-COPY --from=build-step /app/docs /usr/share/nginx/html
+COPY --from=build /app/docs /usr/share/nginx/html
