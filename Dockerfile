@@ -1,22 +1,34 @@
-# Specifying the ubuntu base image
-FROM ubuntu
-    
-# Name and email of the person who maintains the file
-MAINTAINER Rosalind Franklin rosalind.franklin@sbgenomics.com
-  
-# Set working directory as "/"
-WORKDIR /
-  
-# Updating ubuntu and installing other necessary software
-RUN apt-get update --yes \
-&& apt-get install wget build-essential zlib1g-dev libncurses5-dev vim --yes
-   
-# Pulling SAMTools from its repository, unpacking the archive and installing
-RUN wget https://github.com/samtools/samtools/releases/download/1.2/samtools-1.2.tar.bz2 \
-&& tar jxf samtools-1.2.tar.bz2 \
-&& cd samtools-1.2 \
-&& make \
-&& make install
-  
-# Set command to bash
-CMD ["/bin/bash"]
+# Stage 1
+2
+3
+FROM node:10-alpine as build-step
+4
+5
+RUN mkdir -p /app
+6
+7
+WORKDIR /app
+8
+9
+COPY package.json /app
+10
+11
+RUN npm install
+12
+13
+COPY . /app
+14
+15
+RUN npm run build --prod
+16
+17
+ 
+18
+19
+# Stage 2
+20
+21
+FROM nginx:1.17.1-alpine
+22
+23
+COPY --from=build-step /app/docs /usr/share/nginx/html
